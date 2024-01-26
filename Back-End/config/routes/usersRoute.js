@@ -6,3 +6,5 @@ const router = express.Router();
 
 router.post("/usuarios");
 router.get("/usuarios");
+
+export default router;
