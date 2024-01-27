@@ -1,15 +1,14 @@
-import pool from "../../config/db/DBconnection";
+import pool from "../../config/db/DBconnection.js";
 import bcrypt from "bcryptjs";
 import format from "pg-format";
 
-const createUser = async ({ email, password, rol, lenguage }) => {
+const createUser = async (email, password, rol, lenguage) => {
+  console.log(email, password, rol, lenguage);
   //Encryption
-  const salt = await bcrypt.genSaltSync(2024); //Extra layer of security
-  const hashedPassword = await bcrypt.hashSync(password, salt);
-
+  const hashedPassword = await bcrypt.hashSync(password);
   //Query
   const SQLQueryTemplate =
-    "INSERT INTO %I (email, password, rol, lenguage) VALUES (%I, %I, %L, %I) RETURNING *";
+    "INSERT INTO %I (email, password, rol, lenguage) VALUES (%L, %L, %L, %L) RETURNING *;";
   const SQLTable = "usuarios";
   const SQLFormatted = format(
     SQLQueryTemplate,
@@ -25,8 +24,8 @@ const createUser = async ({ email, password, rol, lenguage }) => {
   return response.rows[0];
 };
 
-const checkByEmail = async ({ email }) => {
-  const SQLQueryTemplate = "SELECT * FROM %I WHERE = %I";
+const checkByEmail = async (email) => {
+  const SQLQueryTemplate = "SELECT * FROM %I WHERE email = %L;";
   const SQLTable = "usuarios";
   const SQLFormatted = format(SQLQueryTemplate, SQLTable, email);
   const response = await pool.query(SQLFormatted);
